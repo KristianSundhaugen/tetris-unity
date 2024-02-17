@@ -10,7 +10,7 @@ public class StartMenu : MonoBehaviour
 
     public void OpenSettings()
     {
-        SceneManager.LoadScene("Settings");
+        SceneManager.LoadScene("SettingsMenu");
     }
 
     public void QuitGame()
