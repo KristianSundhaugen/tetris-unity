@@ -79,19 +79,92 @@ public class Piece : MonoBehaviour
 
     private void Step()
     {
+        ScoreManager scoreManager = GameObject.FindObjectOfType<ScoreManager>();
+
+        if (scoreManager == null)
+        {
+            Debug.LogError("Missing Score Manager");
+        }
+        else
+        {
+            UpdateStepDelay(scoreManager.Level);
+        }
+
+
         this.stepTime = Time.time + this.stepDelay;
 
         Move(Vector2Int.down);
 
-        if(this.lockTime >= this.lockDelay){
+        if (this.lockTime >= this.lockDelay)
+        {
             Lock();
+        }
+    }
+
+    public void UpdateStepDelay(int level)
+    {
+        switch (level)
+        {
+            case 0:
+                stepDelay = 1.0f;
+                break;
+            case 1:
+                stepDelay = 0.95f;
+                break;
+            case 2:
+                stepDelay = 0.90f;
+                break;
+            case 3:
+                stepDelay = 0.85f;
+                break;
+            case 4:
+                stepDelay = 0.75f;
+                break;
+            case 5:
+                stepDelay = 0.65f;
+                break;
+            case 6:
+                stepDelay = 0.45f;
+                break;
+            case 7:
+                stepDelay = 0.30f;
+                break;
+            case 8:
+                stepDelay = 0.20f;
+                break;
+            case 9:
+                stepDelay = 0.15f;
+                break;
+            case 10:
+                stepDelay = 0.12f;
+                break;
+            case 11:
+                stepDelay = 0.10f;
+                break;
+            case 12:
+                stepDelay = 0.08f;
+                break;
+            case 13:
+                stepDelay = 0.05f;
+                break;
+            case 14:
+                stepDelay = 0.03f;
+                break;
+            default:
+                stepDelay = 0.01f;
+                break;
         }
     }
 
     private void Lock()
     {
+        int linesCleared;
         this.board.Set(this);
-        this.board.ClearLines();
+        linesCleared = this.board.ClearLines();
+        if (linesCleared > 0)
+        {
+            this.board.scoreManager.UpdateUI(linesCleared);
+        }
         this.board.SpawnPiece();
     }
 

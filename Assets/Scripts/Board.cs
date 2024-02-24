@@ -5,6 +5,7 @@ public class Board : MonoBehaviour
 {
     public Tilemap tilemap { get; private set; }
     public Piece activePiece { get; private set; }
+    public ScoreManager scoreManager { get; private set; }
     public TetrominoData[] tetrominos;
     public Vector3Int spawnPosition;
     public Vector2Int boardSize = new Vector2Int(10, 20);
@@ -22,6 +23,7 @@ public class Board : MonoBehaviour
     {
         this.tilemap = GetComponentInChildren<Tilemap>();
         this.activePiece = GetComponentInChildren<Piece>();
+        this.scoreManager = GetComponentInChildren<ScoreManager>();
 
         for (int i = 0; i < this.tetrominos.Length; i++)
         {
@@ -31,7 +33,18 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
+        // You might want to set up or initialize your ScoreManager here
+        if (this.scoreManager == null)
+        {
+            Debug.LogError("ScoreManager reference is not set in the Board script.");
+        }
+        else
+        {
+            this.scoreManager.ResetUI();
+        }
+
         SpawnPiece();
+
     }
 
     public void SpawnPiece()
@@ -41,15 +54,19 @@ public class Board : MonoBehaviour
 
         this.activePiece.Initialize(this, this.spawnPosition, data);
 
-        if(IsValidPosition(this.activePiece, this.spawnPosition)){
+        if (IsValidPosition(this.activePiece, this.spawnPosition))
+        {
             Set(activePiece);
-        } else {
+        }
+        else
+        {
             GameOver();
         }
     }
 
     private void GameOver()
     {
+        this.scoreManager.ResetUI();
         this.tilemap.ClearAllTiles();
     }
 
@@ -96,22 +113,25 @@ public class Board : MonoBehaviour
         return true;
     }
 
-    public void ClearLines()
+    public int ClearLines()
     {
         RectInt bounds = this.Bounds;
         int row = bounds.yMin;
+        int countLinesCleard = 0;
 
         while (row < bounds.yMax)
         {
             if (IsLineFull(row))
             {
                 LineClear(row);
+                countLinesCleard++;
             }
             else
             {
                 row++;
             }
         }
+        return countLinesCleard;
     }
 
     private bool IsLineFull(int row)
