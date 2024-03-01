@@ -6,14 +6,20 @@ public class SettingsHandler : MonoBehaviour
 {
     public Toggle musicToggle;
     public Slider volumeSlider;
-    public AudioSource musicSource;
+    private AudioSource musicSource;
 
     void Awake()
     {
         // Load saved settings (if any)
         // Initialize UI elements based on saved settings
         // For example, you could load the volume level and music state from PlayerPrefs
-        musicSource = GameObject.FindGameObjectWithTag("BackgroundMusic").GetComponent<AudioSource>(); 
+        GameObject backgroundMusic = GameObject.Find("BackgroundMusic");
+        if (backgroundMusic != null)
+        {
+            musicSource = backgroundMusic.GetComponent<AudioSource>();
+        } else {
+            Debug.Log("Could not find game object");
+        }
         volumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f); // Default to maximum volume
         musicToggle.isOn = PlayerPrefs.GetInt("MusicEnabled", 1) == 1; // Default to music enabled
         ApplySettings();
