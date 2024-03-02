@@ -17,12 +17,13 @@ public class SettingsHandler : MonoBehaviour
         if (backgroundMusic != null)
         {
             musicSource = backgroundMusic.GetComponent<AudioSource>();
-        } else {
+            volumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f); // Default to maximum volume
+            musicToggle.isOn = PlayerPrefs.GetInt("MusicEnabled", 1) == 1; // Default to music enabled
+        }
+        else
+        {
             Debug.Log("Could not find game object");
         }
-        volumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f); // Default to maximum volume
-        musicToggle.isOn = PlayerPrefs.GetInt("MusicEnabled", 1) == 1; // Default to music enabled
-        ApplySettings();
     }
 
     public void ToggleMusic()
@@ -37,22 +38,29 @@ public class SettingsHandler : MonoBehaviour
 
     private void ApplySettings()
     {
-        musicSource.volume = volumeSlider.value;
-
-        if (musicToggle.isOn)
+        if (musicSource != null)
         {
-            // Play music if the toggle is on
-            musicSource.Play();
+            musicSource.volume = volumeSlider.value;
+
+            if (musicToggle.isOn)
+            {
+                // Play music if the toggle is on
+                musicSource.Play();
+            }
+            else
+            {
+                // Stop music if the toggle is off
+                musicSource.Stop();
+            }
+
+            // Save settings
+            PlayerPrefs.SetFloat("MusicVolume", volumeSlider.value);
+            PlayerPrefs.SetInt("MusicEnabled", musicToggle.isOn ? 1 : 0);
         }
         else
         {
-            // Stop music if the toggle is off
-            musicSource.Stop();
+            Debug.LogError("Music source is not initialized.");
         }
-
-        // Save settings
-        PlayerPrefs.SetFloat("MusicVolume", volumeSlider.value);
-        PlayerPrefs.SetInt("MusicEnabled", musicToggle.isOn ? 1 : 0);
     }
 
     public void BackToStartMenu()

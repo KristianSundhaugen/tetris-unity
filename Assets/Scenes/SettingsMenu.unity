@@ -766,8 +766,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicToggle: {fileID: 271168797}
-  volumeSlider: {fileID: 1580000766}
-  musicSource: {fileID: 0}
+  volumeSlider: {fileID: 0}
 --- !u!1 &313458754
 GameObject:
   m_ObjectHideFlags: 0
@@ -1852,7 +1851,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicToggle: {fileID: 0}
   volumeSlider: {fileID: 0}
-  musicSource: {fileID: 0}
 --- !u!1 &1373858593
 GameObject:
   m_ObjectHideFlags: 0
@@ -2215,8 +2213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   musicToggle: {fileID: 0}
-  volumeSlider: {fileID: 0}
-  musicSource: {fileID: 0}
+  volumeSlider: {fileID: 1580000766}
 --- !u!1 &1642883847
 GameObject:
   m_ObjectHideFlags: 0
