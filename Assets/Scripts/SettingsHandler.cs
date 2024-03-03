@@ -17,8 +17,6 @@ public class SettingsHandler : MonoBehaviour
         if (backgroundMusic != null)
         {
             musicSource = backgroundMusic.GetComponent<AudioSource>();
-            volumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 1f); // Default to maximum volume
-            musicToggle.isOn = PlayerPrefs.GetInt("MusicEnabled", 1) == 1; // Default to music enabled
         }
         else
         {
@@ -28,39 +26,46 @@ public class SettingsHandler : MonoBehaviour
 
     public void ToggleMusic()
     {
-        ApplySettings();
+        if (musicSource == null)
+        {
+            Debug.Log("Missing musicSource");
+            return;
+        }
+        if (musicToggle == null)
+        {
+            Debug.Log("Missing musicToggle");
+            return;
+        }
+
+        if (musicToggle.isOn)
+        {
+            // Play music if the toggle is on
+            musicSource.Play();
+        }
+        else
+        {
+            // Stop music if the toggle is off
+            musicSource.Stop();
+        }
+        PlayerPrefs.SetInt("MusicEnabled", musicToggle.isOn ? 1 : 0);
     }
 
     public void AdjustVolume()
     {
-        ApplySettings();
-    }
-
-    private void ApplySettings()
-    {
-        if (musicSource != null)
+        if (musicSource == null)
         {
-            musicSource.volume = volumeSlider.value;
-
-            if (musicToggle.isOn)
-            {
-                // Play music if the toggle is on
-                musicSource.Play();
-            }
-            else
-            {
-                // Stop music if the toggle is off
-                musicSource.Stop();
-            }
-
-            // Save settings
-            PlayerPrefs.SetFloat("MusicVolume", volumeSlider.value);
-            PlayerPrefs.SetInt("MusicEnabled", musicToggle.isOn ? 1 : 0);
+            Debug.Log("Missing musicSource");
+            return;
         }
-        else
+        if (volumeSlider == null)
         {
-            Debug.LogError("Music source is not initialized.");
+            Debug.Log("Missing volumeSlider");
+            return;
         }
+
+        musicSource.volume = volumeSlider.value;
+        // Save settings
+        PlayerPrefs.SetFloat("MusicVolume", volumeSlider.value);
     }
 
     public void BackToStartMenu()
