@@ -6,6 +6,7 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public TextMeshProUGUI topScoreText;
     public TextMeshProUGUI levelText;
+    public TextMeshProUGUI linesCleardText;
 
     private int currentScore;
     private int topScore;
@@ -35,6 +36,7 @@ public class ScoreManager : MonoBehaviour
 
         currentScore = 0;
         level = 0;
+        totalLinesCleared = 0;
         UpdateUI(0);
     }
 
@@ -50,6 +52,7 @@ public class ScoreManager : MonoBehaviour
         scoreText.text = currentScore.ToString("D6");
         topScoreText.text = topScore.ToString("D6");
         levelText.text = level.ToString();
+        linesCleardText.text = totalLinesCleared.ToString();
     }
 
     public void ResetUI()

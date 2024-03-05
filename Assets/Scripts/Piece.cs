@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
@@ -14,6 +15,12 @@ public class Piece : MonoBehaviour
 
     private float stepTime;
     private float lockTime;
+    private float lastMoveTime;
+    public float moveInterval = 0.1f;
+    public float delayBeforeContinuousMovement = 0.3f;
+    private bool canMove = true;
+
+
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
     {
@@ -50,18 +57,19 @@ public class Piece : MonoBehaviour
             Rotate(1);
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKey(KeyCode.A))
         {
-            Move(Vector2Int.left);
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            Move(Vector2Int.right);
+            MoveContinuous(Vector2Int.left);
         }
 
-        if (Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKeyDown(KeyCode.D) || Input.GetKey(KeyCode.D))
         {
-            Move(Vector2Int.down);
+            MoveContinuous(Vector2Int.right);
+        }
+
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKey(KeyCode.S))
+        {
+            MoveContinuous(Vector2Int.down);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -76,6 +84,7 @@ public class Piece : MonoBehaviour
 
         this.board.Set(this);
     }
+
 
     private void Step()
     {
@@ -193,6 +202,31 @@ public class Piece : MonoBehaviour
         }
 
         return valid;
+    }
+
+    private void MoveContinuous(Vector2Int translation)
+    {
+        ContinuousMovementCoroutine(translation);
+        // Continuously move while the key is held down
+        if (Time.time - lastMoveTime >= moveInterval && canMove)
+        {
+            if (Move(translation))
+            {
+                lastMoveTime = Time.time;
+            }
+        }
+    }
+
+    private IEnumerator ContinuousMovementCoroutine(Vector2Int translation)
+    {
+        // Set a flag to prevent continuous movement until delay expires
+        canMove = false;
+
+        // Wait for a short delay before allowing continuous movement
+        yield return new WaitForSeconds(delayBeforeContinuousMovement);
+
+        // Allow continuous movement after the delay
+        canMove = true;
     }
 
     private void Rotate(int direction)
