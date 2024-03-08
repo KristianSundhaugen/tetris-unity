@@ -9,6 +9,7 @@ public class Board : MonoBehaviour
     public TetrominoData[] tetrominos;
     public Vector3Int spawnPosition;
     public Vector2Int boardSize = new Vector2Int(10, 20);
+    public GameObject pauseMenuUI;
 
     public RectInt Bounds
     {
@@ -24,6 +25,8 @@ public class Board : MonoBehaviour
         this.tilemap = GetComponentInChildren<Tilemap>();
         this.activePiece = GetComponentInChildren<Piece>();
         this.scoreManager = GetComponentInChildren<ScoreManager>();
+        pauseMenuUI.SetActive(false); // Ensure it's initially deactivated
+        Time.timeScale = 1f;
 
         for (int i = 0; i < this.tetrominos.Length; i++)
         {
@@ -61,6 +64,30 @@ public class Board : MonoBehaviour
         else
         {
             GameOver();
+        }
+    }
+
+    public void PauseGame()
+    {
+        Time.timeScale = 0f; // Freeze time to pause gameplay
+        pauseMenuUI.SetActive(true); // Show the pause menu UI
+    }
+
+    public void ResumeGame()
+    {
+        Time.timeScale = 1f; // Resume normal time to resume gameplay
+        pauseMenuUI.SetActive(false); // Hide the pause menu UI
+    }
+
+    public void TogglePause()
+    {
+        if (Time.timeScale == 0f)
+        {
+            ResumeGame();
+        }
+        else
+        {
+            PauseGame();
         }
     }
 

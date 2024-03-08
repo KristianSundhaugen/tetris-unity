@@ -9,9 +9,6 @@ public class Piece : MonoBehaviour
     public Vector3Int[] cells { get; private set; }
     public Vector3Int position { get; private set; }
     public int rotationIndex { get; private set; }
-    public string pauseMenuSceneName = "PauseMenu";
-    public bool isPaused = false;
-    public GameObject pauseMenuUI;
 
     public float stepDelay = 1f;
     public float lockDelay = 0.5f;
@@ -22,14 +19,6 @@ public class Piece : MonoBehaviour
     public float moveInterval = 0.1f;
     public float delayBeforeContinuousMovement = 0.3f;
     private bool canMove = true;
-
-    private void Start()
-    {
-        // Load the PauseMenu scene additively
-        SceneManager.LoadScene(pauseMenuSceneName, LoadSceneMode.Additive);
-        pauseMenuUI = GameObject.Find("PauseMenuCanvas"); // Adjust with your PauseMenu canvas name
-        pauseMenuUI.SetActive(false); // Ensure it's initially deactivated
-    }
 
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
@@ -56,16 +45,10 @@ public class Piece : MonoBehaviour
     {
         this.board.Clear(this);
 
+
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (isPaused)
-            {
-                ResumeGame();
-            }
-            else
-            {
-                PauseGame();
-            }
+            this.board.TogglePause();
         }
 
         this.lockTime += Time.deltaTime;
@@ -105,20 +88,6 @@ public class Piece : MonoBehaviour
         }
 
         this.board.Set(this);
-    }
-
-    public void PauseGame()
-    {
-        isPaused = true;
-        Time.timeScale = 0f; // Freeze time to pause gameplay
-        pauseMenuUI.SetActive(true); // Show the pause menu UI
-    }
-
-    public void ResumeGame()
-    {
-        isPaused = false;
-        Time.timeScale = 1f; // Resume normal time to resume gameplay
-        pauseMenuUI.SetActive(false); // Hide the pause menu UI
     }
 
     private void Step()
