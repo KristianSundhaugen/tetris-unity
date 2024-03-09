@@ -8,11 +8,15 @@ public class SettingsHandler : MonoBehaviour
     public Slider volumeSlider;
     private AudioSource musicSource;
 
-    void Awake()
+    void Start()
     {
         // Load saved settings (if any)
-        // Initialize UI elements based on saved settings
-        // For example, you could load the volume level and music state from PlayerPrefs
+        LoadSettings();
+    }
+
+    void Awake()
+    {
+        // Find and initialize the music source
         GameObject backgroundMusic = GameObject.Find("BackgroundMusic");
         if (backgroundMusic != null)
         {
@@ -23,6 +27,39 @@ public class SettingsHandler : MonoBehaviour
             Debug.Log("Could not find game object");
         }
     }
+
+    void LoadSettings()
+    {
+        // Load settings from PlayerPrefs
+        if (PlayerPrefs.HasKey("MusicEnabled"))
+        {
+            bool musicEnabled = PlayerPrefs.GetInt("MusicEnabled") == 1;
+            if (musicToggle != null) // Check if musicToggle is assigned
+            {
+                musicToggle.isOn = musicEnabled;
+            }
+
+            if (musicEnabled && musicSource != null)
+            {
+                musicSource.Play();
+            }
+        }
+
+        if (PlayerPrefs.HasKey("MusicVolume"))
+        {
+            float volume = PlayerPrefs.GetFloat("MusicVolume");
+            if (volumeSlider != null) // Check if volumeSlider is assigned
+            {
+                volumeSlider.value = volume; //THIS IS LINE 48
+            }
+
+            if (musicSource != null)
+            {
+                musicSource.volume = volume;
+            }
+        }
+    }
+
 
     public void ToggleMusic()
     {
@@ -39,14 +76,14 @@ public class SettingsHandler : MonoBehaviour
 
         if (musicToggle.isOn)
         {
-            // Play music if the toggle is on
             musicSource.Play();
         }
         else
         {
-            // Stop music if the toggle is off
             musicSource.Stop();
         }
+
+        // Save music toggle state
         PlayerPrefs.SetInt("MusicEnabled", musicToggle.isOn ? 1 : 0);
     }
 
@@ -64,12 +101,31 @@ public class SettingsHandler : MonoBehaviour
         }
 
         musicSource.volume = volumeSlider.value;
-        // Save settings
+
+        // Save volume settings
         PlayerPrefs.SetFloat("MusicVolume", volumeSlider.value);
     }
 
     public void BackToStartMenu()
     {
+        // Save settings before going back to the start menu
+        SaveSettings();
+
+        // Load the start menu scene
         SceneManager.LoadScene("StartMenu");
+    }
+
+    void SaveSettings()
+    {
+        // Save settings to PlayerPrefs
+        if (musicToggle != null)
+        {
+            PlayerPrefs.SetInt("MusicEnabled", musicToggle.isOn ? 1 : 0);
+        }
+
+        if (volumeSlider != null)
+        {
+            PlayerPrefs.SetFloat("MusicVolume", volumeSlider.value);
+        }
     }
 }
