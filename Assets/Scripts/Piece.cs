@@ -17,8 +17,6 @@ public class Piece : MonoBehaviour
     private float lockTime;
     private float lastMoveTime;
     public float moveInterval = 0.1f;
-    public float delayBeforeContinuousMovement = 0.3f;
-    private bool canMove = true;
 
 
     public void Initialize(Board board, Vector3Int position, TetrominoData data)
@@ -210,27 +208,14 @@ public class Piece : MonoBehaviour
 
     private void MoveContinuous(Vector2Int translation)
     {
-        ContinuousMovementCoroutine(translation);
         // Continuously move while the key is held down
-        if (Time.time - lastMoveTime >= moveInterval && canMove)
+        if (Time.time - lastMoveTime >= moveInterval)
         {
             if (Move(translation))
             {
                 lastMoveTime = Time.time;
             }
         }
-    }
-
-    private IEnumerator ContinuousMovementCoroutine(Vector2Int translation)
-    {
-        // Set a flag to prevent continuous movement until delay expires
-        canMove = false;
-
-        // Wait for a short delay before allowing continuous movement
-        yield return new WaitForSeconds(delayBeforeContinuousMovement);
-
-        // Allow continuous movement after the delay
-        canMove = true;
     }
 
     private void Rotate(int direction)
