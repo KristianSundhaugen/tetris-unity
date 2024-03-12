@@ -25,9 +25,17 @@ public class ScoreManager : MonoBehaviour
 
     private const string TopScoreKey = "TopScore";
 
+    public int CurrentScore
+    {
+        get { return currentScore; }
+    }
     public int Level
     {
         get { return level; }
+    }
+    public int TotalLinesCleared
+    {
+        get { return TotalLinesCleared; }
     }
 
     private void Awake()

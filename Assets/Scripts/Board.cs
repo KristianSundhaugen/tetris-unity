@@ -10,6 +10,9 @@ public class Board : MonoBehaviour
     public Vector3Int spawnPosition;
     public Vector2Int boardSize = new Vector2Int(10, 20);
     public GameObject pauseMenuUI;
+    public delegate void GameOverAction();
+    public static event GameOverAction OnGameOver;
+    private bool isGameOver = false;
 
     public RectInt Bounds
     {
@@ -52,18 +55,21 @@ public class Board : MonoBehaviour
 
     public void SpawnPiece()
     {
-        int random = Random.Range(0, this.tetrominos.Length);
-        TetrominoData data = this.tetrominos[random];
-
-        this.activePiece.Initialize(this, this.spawnPosition, data);
-
-        if (IsValidPosition(this.activePiece, this.spawnPosition))
+        if (isGameOver == false)
         {
-            Set(activePiece);
-        }
-        else
-        {
-            GameOver();
+            int random = Random.Range(0, this.tetrominos.Length);
+            TetrominoData data = this.tetrominos[random];
+
+            this.activePiece.Initialize(this, this.spawnPosition, data);
+
+            if (IsValidPosition(this.activePiece, this.spawnPosition))
+            {
+                Set(activePiece);
+            }
+            else
+            {
+                TriggerGameOver();
+            }
         }
     }
 
@@ -91,10 +97,12 @@ public class Board : MonoBehaviour
         }
     }
 
-    private void GameOver()
+    private void TriggerGameOver()
     {
-        this.scoreManager.ResetUI();
-        this.tilemap.ClearAllTiles();
+        // this.scoreManager.ResetUI();
+        // this.tilemap.ClearAllTiles();
+        isGameOver = true;
+        OnGameOver?.Invoke();
     }
 
     public void Set(Piece piece)

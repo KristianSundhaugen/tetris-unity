@@ -1,6 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Piece : MonoBehaviour
 {
@@ -42,7 +40,6 @@ public class Piece : MonoBehaviour
     private void Update()
     {
         this.board.Clear(this);
-
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
