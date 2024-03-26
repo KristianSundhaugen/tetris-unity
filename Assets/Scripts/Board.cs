@@ -10,6 +10,7 @@ public class Board : MonoBehaviour
     public Vector3Int spawnPosition;
     public Vector2Int boardSize = new Vector2Int(10, 20);
     public GameObject pauseMenuUI;
+    public GameObject gameOverMenuUI;
     public delegate void GameOverAction();
     public static event GameOverAction OnGameOver;
     private bool isGameOver = false;
@@ -28,7 +29,8 @@ public class Board : MonoBehaviour
         this.tilemap = GetComponentInChildren<Tilemap>();
         this.activePiece = GetComponentInChildren<Piece>();
         this.scoreManager = GetComponentInChildren<ScoreManager>();
-        pauseMenuUI.SetActive(false); // Ensure it's initially deactivated
+        pauseMenuUI.SetActive(false);
+        gameOverMenuUI.SetActive(false);
         Time.timeScale = 1f;
 
         for (int i = 0; i < this.tetrominos.Length; i++)
@@ -99,10 +101,20 @@ public class Board : MonoBehaviour
 
     private void TriggerGameOver()
     {
-        // this.scoreManager.ResetUI();
-        // this.tilemap.ClearAllTiles();
         isGameOver = true;
-        OnGameOver?.Invoke();
+        Time.timeScale = 0f;
+        gameOverMenuUI.SetActive(true);
+        // OnGameOver?.Invoke();
+    }
+
+    public void ResetGame()
+    {
+        this.scoreManager.ResetUI();
+        this.tilemap.ClearAllTiles();
+        pauseMenuUI.SetActive(false);
+        gameOverMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+        isGameOver = false;
     }
 
     public void Set(Piece piece)

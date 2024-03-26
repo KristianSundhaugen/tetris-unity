@@ -10,6 +10,8 @@ public class GameOverManager : MonoBehaviour
     public TextMeshProUGUI finalLinesCleardText;
     private ScoreManager scoreManager;
 
+    public Board board;
+
     private bool isGameOver = false;
 
     public bool IsGameOver
@@ -19,22 +21,16 @@ public class GameOverManager : MonoBehaviour
 
     private void Start()
     {
-        // Hide the game over screen initially
-        gameObject.SetActive(false);
-
-        // Subscribe to the game over event
         Board.OnGameOver += HandleGameOver;
     }
 
     private void OnDestroy()
     {
-        // Unsubscribe from the game over event to avoid memory leaks
         Board.OnGameOver -= HandleGameOver;
     }
 
     private void HandleGameOver()
     {
-        // Call the GameOver method when the game over event is triggered
         GameOver();
     }
 
@@ -46,21 +42,17 @@ public class GameOverManager : MonoBehaviour
 
             gameObject.SetActive(true);
 
-            // Set UI
-
             isGameOver = true;
         }
     }
 
     public void RestartGame()
     {
-        // Reload the current scene to restart the game
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        board.ResetGame();
     }
 
     public void GoToMainMenu()
     {
-        // Load the main menu scene
         SceneManager.LoadScene("MainMenu");
     }
 }
