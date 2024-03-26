@@ -11,8 +11,7 @@ public class Board : MonoBehaviour
     public Vector2Int boardSize = new Vector2Int(10, 20);
     public GameObject pauseMenuUI;
     public GameObject gameOverMenuUI;
-    public delegate void GameOverAction();
-    public static event GameOverAction OnGameOver;
+    public GameOverManager gameOverManager;
     private bool isGameOver = false;
 
     public RectInt Bounds
@@ -29,6 +28,14 @@ public class Board : MonoBehaviour
         this.tilemap = GetComponentInChildren<Tilemap>();
         this.activePiece = GetComponentInChildren<Piece>();
         this.scoreManager = GetComponentInChildren<ScoreManager>();
+        if (gameOverManager == null)
+        {
+            gameOverManager = FindObjectOfType<GameOverManager>();
+            if (gameOverManager == null)
+            {
+                Debug.LogError("GameOverManager not found in the scene.");
+            }
+        }
         pauseMenuUI.SetActive(false);
         gameOverMenuUI.SetActive(false);
         Time.timeScale = 1f;
@@ -102,9 +109,8 @@ public class Board : MonoBehaviour
     private void TriggerGameOver()
     {
         isGameOver = true;
-        Time.timeScale = 0f;
         gameOverMenuUI.SetActive(true);
-        // OnGameOver?.Invoke();
+        gameOverManager.GameOver();
     }
 
     public void ResetGame()

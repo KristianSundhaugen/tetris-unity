@@ -9,7 +9,6 @@ public class GameOverManager : MonoBehaviour
     public TextMeshProUGUI finalLevelText;
     public TextMeshProUGUI finalLinesCleardText;
     private ScoreManager scoreManager;
-
     public Board board;
 
     private bool isGameOver = false;
@@ -19,31 +18,44 @@ public class GameOverManager : MonoBehaviour
         get { return isGameOver; }
     }
 
-    private void Start()
+    private void Awake()
     {
-        Board.OnGameOver += HandleGameOver;
+        if (scoreManager == null)
+        {
+            scoreManager = FindObjectOfType<ScoreManager>();
+            if (scoreManager == null)
+            {
+                Debug.LogError("ScoreManager reference is not set in the GameOverManager script.");
+            }
+        }
     }
 
-    private void OnDestroy()
-    {
-        Board.OnGameOver -= HandleGameOver;
-    }
-
-    private void HandleGameOver()
-    {
-        GameOver();
-    }
-
-    private void GameOver()
+    public void GameOver()
     {
         if (!isGameOver)
         {
             Time.timeScale = 0f;
 
-            gameObject.SetActive(true);
+            //Compented out because scoreManager keeps crashing during debugging
+            //UpdateGameOverScore
 
             isGameOver = true;
         }
+    }
+
+    private void UpdateGameOverScore()
+    {
+        if (scoreManager != null)
+        {
+            finalScoreText.text = scoreManager.CurrentScore.ToString("D6");
+            finalLevelText.text = scoreManager.Level.ToString();
+            finalLinesCleardText.text = scoreManager.TotalLinesCleared.ToString();
+        }
+        else
+        {
+            Debug.LogError("ScoreManager reference is not set in the GameOverManager.");
+        }
+
     }
 
     public void RestartGame()
